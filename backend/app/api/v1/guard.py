@@ -10,7 +10,6 @@ TODO for contributors (medium difficulty):
 """
 
 import hashlib
-import torch
 from collections import defaultdict, deque
 from datetime import datetime, timedelta, timezone
 from threading import Lock
@@ -26,6 +25,8 @@ from app.models.guard_scan_log import GuardScanLog
 from app.models.user import User
 from app.schemas.guard_scan_log import GuardScanLogResponse
 from app.schemas.pagination import PaginatedResponse
+from app.core.config import settings
+from app.modules.guard import guard_config
 
 router = APIRouter()
 
@@ -143,18 +144,23 @@ def guard_health():
 
 @router.get("/info", tags=["LLM Guard"])
 def guard_info():
-    """
-    Return Guard module diagnostic information.
-    """
+    """Return diagnostic information about the Guard module."""
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    try:
+        import torch
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+    except ImportError:
+        device = "cpu"
+    from pathlib import Path
+
+    model_path = Path(guard_config.get_trained_model_path()).name
 
     return {
         "module": "llm_guard",
         "status": "available",
-        "model_name": "DeBERTa-v3",
         "device": device,
-        "sanitization_level": "medium"
+        "model_name": model_path or "pretrained-fallback",
+        "sanitization_level": guard_config.SANITIZATION_LEVEL
     }
 
 
