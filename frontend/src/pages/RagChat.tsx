@@ -75,7 +75,6 @@ export default function RagChat() {
         answer: data.answer,
         sources: data.sources || [],
       })
-
     } catch (err: unknown) {
       // ✅ ERROR HANDLING
       const apiError = isApiError(err) ? err : {}
