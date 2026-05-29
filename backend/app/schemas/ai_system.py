@@ -47,6 +47,8 @@ class RiskClassificationRequest(BaseModel):
     # AI used by public authorities to evaluate/classify people based on social behaviour
     realtime_biometric_public: bool = False
     # Real-time remote biometric identification in publicly accessible spaces
+    biometric_categorisation: bool = False
+    # Uses biometric data to infer sensitive attributes like race, religion, political opinion, or sexual orientation
     subliminal_manipulation: bool = False
     # Techniques that manipulate behaviour subliminally causing harm
     exploits_vulnerable_groups: bool = False
